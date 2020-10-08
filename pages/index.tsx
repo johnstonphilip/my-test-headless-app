@@ -4,7 +4,7 @@ import ReactPlayer from 'react-player'
 import Confetti from 'react-confetti'
 import { parse } from '@wordpress/block-serialization-default-parser';
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
 
   const wp_head = await fetch('https://philjohnston.wpengine.com/wp-json/atlas/v1/wp_head')
   .then(response => response.json())
