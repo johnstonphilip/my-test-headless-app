@@ -1,28 +1,47 @@
-import { useState } from 'react';
+import { JSXElementConstructor, useState, Fragment} from 'react';
+import Head from 'next/head';
 import ReactPlayer from 'react-player'
 import Confetti from 'react-confetti'
 import { parse } from '@wordpress/block-serialization-default-parser';
 
 export async function getServerSideProps() {
 
-  return fetch('https://philjohnston.wpengine.com/wp-json/wp/v2/posts/135')
+  const wp_head = await fetch('https://philjohnston.wpengine.com/wp-json/atlas/v1/wp_head')
   .then(response => response.json())
   .then( (data) => {
-    return {
-      props: data
-    }
+    return data
   });
+  
+  const post_content = await fetch('https://philjohnston.wpengine.com/wp-json/wp/v2/posts/135')
+  .then(response => response.json())
+  .then( (data) => {
+    return data
+  });
+  
+  const wp_footer = await fetch('https://philjohnston.wpengine.com/wp-json/atlas/v1/wp_footer')
+  .then(response => response.json())
+  .then( (data) => {
+    return data
+  });
+  
+  
+  return {
+    props: {
+      wp_head: wp_head,
+      post_content: post_content,
+      wp_footer: wp_footer
+    }
+  }
 
 }
 
 function Home (props) {
     
-    const [blocks, setBlocks] = useState( parse( props.content_raw ) );
+    console.log( props );
+  
+    const [blocks, setBlocks] = useState( parse( props.post_content.content_raw ) );
     const [renderConfetti, setRenderConfetti] = useState( false );
-    
-
-    console.log( blocks );
-    
+        
     const output = [];
     for( var block in blocks ) {
       if ( ! blocks[block].blockName ) {
@@ -76,11 +95,32 @@ function Home (props) {
         )
       }
     }
-    
+  
+    function render_wp_head() {
+      const headElements = [];
+      
+      for( var element in props.wp_head.scripts ) {
+        headElements.push( <script key={element} src={props.wp_head.scripts[element]}/> );
+      }
+      
+      for( var element in props.wp_head.styles ) {
+        headElements.push( <link key={element} rel="stylesheet" href={props.wp_head.styles[element]}/> );
+      }
+      
+      return headElements;
+    }
+  
     return (
       <>
-        { output }
-        { maybeRenderConfetti() }
+        <Head>
+        { render_wp_head() }
+        </Head>
+       
+          { output }
+          { maybeRenderConfetti() }
+       
+        <footer dangerouslySetInnerHTML={{ __html: props.wp_footer  }} />
+
       </>
     )
 }
