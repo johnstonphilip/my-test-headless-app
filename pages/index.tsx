@@ -5,7 +5,7 @@ import Confetti from 'react-confetti'
 import { parse } from '@wordpress/block-serialization-default-parser';
 
 //export async function getStaticProps() {
-export async function getStaticProps() {
+export async function getServerSideProps() {
 
   return fetch('https://philjohnston.wpengine.com/wp-json/wp/v2/posts/135')
   .then(response => response.json())
