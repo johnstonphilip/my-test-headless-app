@@ -5,7 +5,8 @@ import Confetti from 'react-confetti'
 import { parse } from '@wordpress/block-serialization-default-parser';
 
 import dynamic from "next/dynamic";
-const Settings = dynamic(() => import('./myfile.js'), { ssr: false });
+
+const Settings = dynamic(() => import('genesis-settings-app').then(x => x.Settings), { ssr: false } );
 
 export async function getServerSideProps() {
 
@@ -112,34 +113,9 @@ function Home (props) {
       
       return headElements;
     }
-    
-    function maybeRenderSettingsApp() {    
-        return (
-          <Settings 
-            settings={{
-              setting_slug: 'Setting Value',
-              another_setting_slug: 'Another Setting Value',
-            }}
-            sections={{
-              my_tab_slug: {
-                name: 'my_tab_slug',
-                title: 'Tab One',
-                fields:[
-                  {
-                    id: 'first_field_slug',
-                    label: 'Field One',
-                    type: 'text'
-                  },
-                  {
-                    id: 'another_field_slug',
-                    label: 'Field Two',
-                    type: 'text'
-                  },
-                ],
-              }
-            }}
-        />
-        )
+
+    function maybeRenderSettingsApp() {
+      return <Settings />
     }
 
     return (
