@@ -3,9 +3,7 @@ import Head from 'next/head';
 import ReactPlayer from 'react-player'
 import Confetti from 'react-confetti'
 import { parse } from '@wordpress/block-serialization-default-parser';
-
-import dynamic from "next/dynamic";
-const Settings = dynamic(() => import('./myfile.js'), { ssr: false });
+import {TopLevelContainer, Receipt} from 'mpe-packages';
 
 export async function getServerSideProps() {
 
@@ -112,44 +110,17 @@ function Home (props) {
       
       return headElements;
     }
-    
-    function maybeRenderSettingsApp() {    
-        return (
-          <Settings 
-            settings={{
-              setting_slug: 'Setting Value',
-              another_setting_slug: 'Another Setting Value',
-            }}
-            sections={{
-              my_tab_slug: {
-                name: 'my_tab_slug',
-                title: 'Tab One',
-                fields:[
-                  {
-                    id: 'first_field_slug',
-                    label: 'Field One',
-                    type: 'text'
-                  },
-                  {
-                    id: 'another_field_slug',
-                    label: 'Field Two',
-                    type: 'text'
-                  },
-                ],
-              }
-            }}
-        />
-        )
-    }
-
+  
     return (
       <>
         <Head>
         { render_wp_head() }
         </Head>
-          { maybeRenderSettingsApp() }
+          <TopLevelContainer />
+          <Receipt />
           { output }
           { maybeRenderConfetti() }
+       
         <footer dangerouslySetInnerHTML={{ __html: props.wp_footer  }} />
 
       </>
